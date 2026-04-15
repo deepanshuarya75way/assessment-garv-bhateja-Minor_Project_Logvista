@@ -1,0 +1,227 @@
+.threat-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  width: fit-content;
+  transition: var(--transition-fast);
+}
+
+.back-btn:hover {
+  color: var(--text-main);
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.title-section h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.primary-btn.bg-red {
+  background-color: var(--accent-red);
+}
+
+.primary-btn.bg-red:hover {
+  background-color: var(--accent-red-neon);
+  box-shadow: var(--shadow-neon-red);
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.full-panel {
+  grid-column: span 2;
+}
+
+.panel-card {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.panel-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.panel-content {
+  padding: 1.5rem;
+}
+
+.reasoning-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  margin-bottom: 2rem;
+}
+
+.highlight {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: var(--accent-red-neon);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.confidence-meter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--bg-dark);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.meter-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-purple);
+}
+
+.meter-bar {
+  flex: 1;
+  height: 8px;
+  background-color: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-red));
+  border-radius: 4px;
+}
+
+.meter-value {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.impact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.impact-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--accent-red-neon);
+  background-color: rgba(239, 68, 68, 0.05);
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.mitigation-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.mitigation-step {
+  display: flex;
+  gap: 1rem;
+  background-color: var(--bg-dark);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.step-num {
+  width: 32px;
+  height: 32px;
+  background-color: var(--accent-green);
+  color: #000;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-desc h4 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.step-desc p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.log-sample-item {
+  background-color: #000;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: var(--accent-green);
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.loading-state, .error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  height: 400px;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+}
+
+.pulse {
+  animation: pulse 1.5s infinite ease-in-out;
+  color: var(--accent-blue);
+  width: 48px;
+  height: 48px;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}

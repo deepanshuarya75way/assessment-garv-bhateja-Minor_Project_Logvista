@@ -1,0 +1,124 @@
+.timeline-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.timeline-container {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.timeline-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 120px;
+  width: 2px;
+  background-color: var(--border-color);
+  z-index: 1;
+}
+
+.timeline-node {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 2;
+}
+
+.timeline-node:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-time {
+  width: 90px;
+  text-align: right;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  padding-top: 0.5rem;
+}
+
+.timeline-marker {
+  width: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.marker-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--bg-panel);
+  border: 2px solid var(--accent-blue);
+  color: var(--accent-blue-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-neon-blue);
+}
+
+.timeline-content {
+  flex: 1;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  position: relative;
+}
+
+.timeline-content::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 14px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid var(--border-color);
+}
+
+.timeline-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.timeline-content p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.node-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.text-btn {
+  color: var(--accent-blue);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.text-btn:hover {
+  text-decoration: underline;
+}
+
+/* Resolution node styling */
+.resolution-node .marker-icon {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.resolution-node .timeline-content {
+  border-color: var(--accent-green);
+  background-color: rgba(16, 185, 129, 0.05);
+}
+
+.resolution-node .timeline-content::before {
+  border-right-color: var(--accent-green);
+}

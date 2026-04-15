@@ -1,0 +1,147 @@
+.report-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.report-document {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  color: var(--text-main);
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.report-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.report-brand h2 {
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.report-meta p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-bottom: 0.25rem;
+}
+
+.report-section {
+  margin-bottom: 2.5rem;
+}
+
+.report-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: var(--accent-blue-neon);
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.report-section p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.report-table th, .report-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.report-table th {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-main);
+}
+
+.report-table td {
+  color: var(--text-muted);
+}
+
+.finding-box {
+  background-color: rgba(239, 68, 68, 0.05);
+  border-left: 3px solid var(--accent-red);
+  padding: 1.5rem;
+  border-radius: 4px;
+}
+
+.finding-box h4 {
+  color: var(--accent-red-neon);
+  margin-bottom: 0.5rem;
+}
+
+.next-steps-list {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.report-footer {
+  margin-top: 4rem;
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+  .no-print, .sidebar, .top-header {
+    display: none !important;
+  }
+  .app-container, .main-content, .page-content {
+    display: block;
+    height: auto;
+    overflow: visible;
+    padding: 0 !important;
+  }
+  .report-document {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    max-width: 100%;
+  }
+  .report-table th {
+    background-color: #f3f4f6 !important;
+    color: #000 !important;
+  }
+  /* Force dark text for print */
+  .report-section p, .report-table td, .report-meta p, .next-steps-list {
+    color: #374151 !important;
+  }
+}

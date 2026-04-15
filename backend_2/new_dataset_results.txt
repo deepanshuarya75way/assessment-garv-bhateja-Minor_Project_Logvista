@@ -1,0 +1,45 @@
+﻿TIMESTAMP            | USER         | IP              | EVENT TYPE           | AI RESULT
+--------------------------------------------------------------------------------------------------------------
+2026-04-03T09:00:01Z | N/A          | 192.168.1.2     | http_request         | Normal
+2026-04-03T09:01:15Z | user1        | 192.168.1.3     | login_success        | Normal
+2026-04-03T09:02:22Z | N/A          | 192.168.1.4     | http_request         | Normal
+2026-04-03T09:03:10Z | N/A          | 192.168.1.5     | query                | Normal
+2026-04-03T09:04:45Z | admin        | 203.0.113.1     | login_failed         | ATTACK (Exploit)
+2026-04-03T09:05:10Z | admin        | 203.0.113.1     | login_failed         | ATTACK (Exploit)
+2026-04-03T09:05:30Z | admin        | 203.0.113.1     | login_failed         | ANOMALY (Exploit)
+2026-04-03T09:06:00Z | N/A          | 198.51.100.10   | http_request         | ATTACK (DoS)
+2026-04-03T09:07:12Z | N/A          | 45.1.1.1        | traffic_spike        | ATTACK (Exploit)
+2026-04-03T09:08:20Z | N/A          | 203.0.113.55    | request_flood        | ANOMALY (DoS)
+2026-04-03T09:09:30Z | user2        | 192.168.1.6     | file_execution       | ANOMALY (DoS)
+2026-04-03T09:10:10Z | emp1         | 192.168.1.7     | data_access          | ANOMALY (DoS)
+2026-04-03T09:11:15Z | emp2         | 192.168.1.8     | privilege_change     | ANOMALY (Exploit)
+2026-04-03T09:12:05Z | emp3         | 192.168.1.9     | data_download        | ANOMALY (Exploit)
+2026-04-03T09:13:40Z | N/A          | 192.168.1.10    | http_request         | Normal
+2026-04-03T09:14:22Z | user3        | 192.168.1.11    | login_success        | Normal
+2026-04-03T09:15:01Z | N/A          | 192.168.1.12    | http_request         | Normal
+2026-04-03T09:16:30Z | N/A          | 192.168.1.13    | query                | Normal
+2026-04-03T09:17:42Z | N/A          | 198.51.100.20   | http_request         | ATTACK (DoS)
+2026-04-03T09:18:55Z | N/A          | 45.2.2.2        | traffic_spike        | ATTACK (Exploit)
+2026-04-03T09:19:10Z | N/A          | 203.0.113.60    | request_flood        | ANOMALY (DoS)
+2026-04-03T09:20:30Z | user4        | 192.168.1.14    | file_execution       | ANOMALY (DoS)
+2026-04-03T09:21:40Z | emp4         | 192.168.1.15    | data_access          | ANOMALY (DoS)
+2026-04-03T09:22:10Z | emp5         | 192.168.1.16    | privilege_change     | ANOMALY (Exploit)
+2026-04-03T09:23:33Z | emp6         | 192.168.1.17    | data_download        | ANOMALY (Exploit)
+2026-04-03T09:24:10Z | N/A          | 192.168.1.18    | http_request         | Normal
+2026-04-03T09:25:12Z | user5        | 192.168.1.19    | login_success        | Normal
+2026-04-03T09:26:15Z | N/A          | 192.168.1.20    | http_request         | Normal
+2026-04-03T09:27:20Z | N/A          | 192.168.1.21    | query                | Normal
+2026-04-03T09:28:10Z | root         | 203.0.113.70    | login_failed         | ATTACK (Exploit)
+2026-04-03T09:28:30Z | root         | 203.0.113.70    | login_failed         | ANOMALY (Exploit)
+2026-04-03T09:29:50Z | N/A          | 198.51.100.30   | http_request         | ATTACK (DoS)
+2026-04-03T09:30:30Z | N/A          | 45.3.3.3        | traffic_spike        | ATTACK (Exploit)
+2026-04-03T09:31:00Z | N/A          | 203.0.113.80    | request_flood        | ANOMALY (DoS)
+2026-04-03T09:32:10Z | user6        | 192.168.1.22    | file_execution       | ANOMALY (DoS)
+2026-04-03T09:33:40Z | emp7         | 192.168.1.23    | data_access          | ANOMALY (DoS)
+2026-04-03T09:34:20Z | emp8         | 192.168.1.24    | privilege_change     | ANOMALY (Exploit)
+2026-04-03T09:35:05Z | emp9         | 192.168.1.25    | data_download        | ANOMALY (Exploit)
+2026-04-03T09:36:10Z | N/A          | 192.168.1.26    | http_request         | Normal
+2026-04-03T09:37:22Z | user7        | 192.168.1.27    | login_success        | Normal
+2026-04-03T09:38:30Z | N/A          | 192.168.1.28    | http_request         | Normal
+2026-04-03T09:39:10Z | N/A          | 192.168.1.29    | query                | Normal
+2026-04-03T09:40:05Z | N/A          | 192.168.1.30    | http_request         | Normal

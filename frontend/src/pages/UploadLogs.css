@@ -1,0 +1,139 @@
+.upload-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.upload-container {
+  background: var(--bg-level-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.drop-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-lg);
+  background: rgba(10, 15, 30, 0.3);
+  transition: all 0.3s ease;
+  min-height: 250px;
+  display: flex;
+  position: relative;
+}
+
+.drop-zone.active {
+  border-color: var(--primary-color);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.drop-zone.has-file {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.hidden-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.drop-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+}
+
+.upload-icon {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.pulse-slow {
+  animation: pulseUpload 4s infinite alternate;
+}
+
+@keyframes pulseUpload {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-5px); }
+}
+
+.drop-zone-content h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.drop-zone-content p {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.format-badges .badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.selected-file {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  z-index: 20;
+}
+
+.file-icon {
+  color: #10b981;
+}
+
+.file-info h4 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.file-info p {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.alert-message {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.alert-message.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.alert-message.success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.upload-actions {
+  margin-top: 30px;
+}
+
+.full-width {
+  width: 100%;
+}

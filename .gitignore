@@ -1,0 +1,8 @@
+node_modules/
+dist/
+build/
+.env
+*.csv
+*.log
+.DS_Store
+*.pkl

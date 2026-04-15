@@ -1,0 +1,14 @@
+﻿TIMESTAMP            | USER         | IP              | EVENT TYPE           | AI RESULT
+--------------------------------------------------------------------------------------------------------------
+2026-04-03T10:15:23Z | john_doe     | 192.168.1.10    | login_success        | Normal
+2026-04-03T10:16:10Z | N/A          | 192.168.1.15    | http_request         | Normal
+2026-04-03T10:17:45Z | admin        | 203.0.113.5     | login_failed         | Normal
+2026-04-03T10:18:01Z | admin        | 203.0.113.5     | login_failed         | Normal
+2026-04-03T10:18:10Z | admin        | 203.0.113.5     | login_failed         | Normal
+2026-04-03T10:20:33Z | N/A          | 198.51.100.22   | http_request         | Normal
+2026-04-03T10:22:11Z | N/A          | 45.67.89.10     | traffic_spike        | Normal
+2026-04-03T10:25:55Z | alice        | 192.168.1.20    | file_execution       | ATTACK (Malware)
+2026-04-03T10:28:40Z | employee_01  | 192.168.1.25    | data_access          | ATTACK (Malware)
+2026-04-03T10:30:05Z | employee_02  | 192.168.1.30    | privilege_change     | ATTACK (Malware)
+2026-04-03T10:32:18Z | employee_03  | 192.168.1.35    | data_download        | ANOMALY (Malware)
+2026-04-03T10:35:50Z | N/A          | 192.168.1.40    | http_request         | Normal

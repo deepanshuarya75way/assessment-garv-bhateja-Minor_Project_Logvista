@@ -1,0 +1,98 @@
+:root {
+  --bg-dark: #07090e;
+  --bg-panel: #11151f;
+  --bg-panel-hover: #1a202c;
+  
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  
+  --accent-blue: #3b82f6;
+  --accent-blue-neon: #60a5fa;
+  --accent-purple: #8b5cf6;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-red-neon: #f87171;
+  --accent-yellow: #f59e0b;
+  
+  --border-color: #1e293b;
+  --border-focus: #334155;
+  
+  --font-family: 'Inter', sans-serif;
+  
+  --shadow-neon-blue: 0 0 12px rgba(59, 130, 246, 0.4);
+  --shadow-neon-red: 0 0 12px rgba(239, 68, 68, 0.4);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  
+  --transition-fast: 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+input, select {
+  font-family: inherit;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-neon-blue);
+}
+
+/* Utilities */
+.text-blue { color: var(--accent-blue); }
+.text-purple { color: var(--accent-purple); }
+.text-green { color: var(--accent-green); }
+.text-red { color: var(--accent-red); }
+.text-yellow { color: var(--accent-yellow); }
+.text-muted { color: var(--text-muted); }
+
+.bg-panel { background-color: var(--bg-panel); }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark); 
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-focus); 
+}
