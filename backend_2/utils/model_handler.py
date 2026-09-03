@@ -15,10 +15,11 @@ def safe_load_model(filename):
     
     # If not found locally, attempt to download from Hugging Face
     if not os.path.exists(target_path) and HF_REPO_ID:
-        # Avoid crashing 512MB free tier RAM with the 2.48GB UNSW model unless explicitly enabled
-        if filename == "unsw_model.pkl" and os.environ.get("LOAD_UNSW_MODEL", "false").lower() != "true":
-            print(f">> [NOTICE] Skipping download of 2.48GB '{filename}' to prevent 512MB RAM crash on free tier.")
-            print(f">> (Set LOAD_UNSW_MODEL=true in Render environment variables if running on a machine with >=4GB RAM)")
+        # Avoid crashing 512MB free tier RAM with massive models (>300MB) unless explicitly enabled
+        load_heavy = os.environ.get("LOAD_HEAVY_MODELS", "false").lower() == "true"
+        if filename in ["unsw_model.pkl", "evtx_model.pkl"] and not load_heavy:
+            print(f">> [FREE TIER NOTICE] Skipping heavy '{filename}' to maintain <150MB RAM and prevent 512MB OOM crash.")
+            print(f">> (Set LOAD_HEAVY_MODELS=true in Render environment variables if running on >=2GB RAM)")
             return None
 
         try:
@@ -117,7 +118,18 @@ class ModelManager:
     
     def _predict_unsw(self, feature_dict):
         if not self.unsw_model:
-            return "Uncertain"
+            raw = str(feature_dict.get("raw_log", "")).lower()
+            if any(k in raw for k in ["dos", "ddos", "syn flood", "attack_cat: dos", "flood"]):
+                return "DoS"
+            if any(k in raw for k in ["select", "union", "1=1", "sqli", "injection", "payload"]):
+                return "Exploit"
+            if any(k in raw for k in ["nmap", "scan", "recon", "probe", "dirbuster"]):
+                return "Recon"
+            if any(k in raw for k in ["fuzz", "overflow"]):
+                return "Fuzzer"
+            if any(k in raw for k in ["malware", "trojan", "backdoor"]):
+                return "Malware"
+            return "Normal"
             
         df = pd.DataFrame([feature_dict])
         
@@ -176,7 +188,25 @@ class ModelManager:
             
     def _predict_evtx(self, feature_dict):
         if not self.evtx_model:
-             return "Uncertain"
+            raw = str(feature_dict.get("raw_log", "")).lower()
+            eid = str(feature_dict.get("EventID", "")).lower()
+            if eid == "4625" or "failed password" in raw or "logon failure" in raw or "failed login" in raw:
+                return "Brute Force Attempt"
+            elif eid == "4624" or "successful logon" in raw or "login success" in raw:
+                if "administrator" in raw or "system" in raw or "root" in raw:
+                    return "Critical Privilege Access"
+                return "Authentication Success"
+            elif eid in ["4672", "4673", "4674"] or "special privileges" in raw or "privilege escalation" in raw:
+                return "Privilege Escalation"
+            elif eid in ["7045", "4697"] or "service installed" in raw:
+                return "Backdoor"
+            elif eid in ["1102", "104"] or "audit log was cleared" in raw:
+                return "Defense Evasion"
+            elif any(k in raw for k in ["mimikatz", "powershell -enc", "cmd.exe /c", "whoami /priv"]):
+                return "Malware"
+            elif any(k in raw for k in ["lsass", "procdump"]):
+                return "Credential Dumping"
+            return "System Activity"
              
         df = pd.DataFrame([feature_dict])
         
