@@ -6,17 +6,45 @@ import json
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+HF_REPO_ID = os.environ.get("HF_REPO_ID", "Garv-m-netizen/logvista_model")
+
 def safe_load_model(filename):
     path1 = os.path.join(BASE_DIR, filename)
     path2 = os.path.join(BASE_DIR, "model", filename)
     target_path = path1 if os.path.exists(path1) else path2
     
+    # If not found locally, attempt to download from Hugging Face
+    if not os.path.exists(target_path) and HF_REPO_ID:
+        # Avoid crashing 512MB free tier RAM with the 2.48GB UNSW model unless explicitly enabled
+        if filename == "unsw_model.pkl" and os.environ.get("LOAD_UNSW_MODEL", "false").lower() != "true":
+            print(f">> [NOTICE] Skipping download of 2.48GB '{filename}' to prevent 512MB RAM crash on free tier.")
+            print(f">> (Set LOAD_UNSW_MODEL=true in Render environment variables if running on a machine with >=4GB RAM)")
+            return None
+
+        try:
+            print(f">> [HF] Downloading '{filename}' from Hugging Face ({HF_REPO_ID})...")
+            from huggingface_hub import hf_hub_download
+            target_dir = os.path.join(BASE_DIR, "model")
+            os.makedirs(target_dir, exist_ok=True)
+            downloaded = hf_hub_download(
+                repo_id=HF_REPO_ID,
+                filename=filename,
+                local_dir=target_dir
+            )
+            target_path = downloaded
+            print(f">> [HF SUCCESS] Downloaded '{filename}'.")
+        except Exception as e:
+            print(f">> [HF NOTICE] '{filename}' not fetched from Hugging Face: {str(e)}")
+
     if os.path.exists(target_path):
         try:
             print(f">> Loading model: {filename}...")
             model = joblib.load(target_path)
             print(f">> [SUCCESS] {filename} loaded.")
             return model
+        except MemoryError:
+            print(f">> [MEMORY ERROR] Server ran out of RAM loading '{filename}'. Falling back to heuristic analysis.")
+            return None
         except Exception as e:
             print(f">> [ERROR] Failed to load {filename}: {str(e)}")
             return None
@@ -72,7 +100,7 @@ class ModelManager:
         
         # EVTX windows model setup
         self.evtx_model = safe_load_model('evtx_model.pkl')
-        self.evtx_encoders = safe_load_model('feature_encoders.pkl')
+        self.evtx_encoders = safe_load_model('feature_encoders.pkl') or safe_load_model('encoders.pkl')
         self.evtx_target = safe_load_model('evtx_target_encoder.pkl') or safe_load_model('target_encoder.pkl')
         
     def extract_features(self, log_dict):
