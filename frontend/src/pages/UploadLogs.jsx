@@ -95,8 +95,9 @@ const UploadLogs = () => {
         }
 
       } catch (err) {
+        console.error("Upload failed:", err);
         setStatus('error');
-        setMessage('Network error or server unavailable.');
+        setMessage(`Network error: Could not reach backend at ${API_BASE_URL}. (${err.message || 'Server waking up or CORS error'})`);
       }
     };
     

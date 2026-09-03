@@ -14,8 +14,15 @@ from utils.correlator import correlate_events, extract_ip, extract_timestamp, ex
 from utils.timeline import generate_timeline
 
 app = Flask(__name__)
-# Enable CORS for all routes and origins (essential for Decoupled Vercel + Render setup)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# Enable CORS for all routes and origins
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+    return response
 
 import os
 
@@ -150,9 +157,11 @@ def process_logs(raw_data):
         traceback.print_exc()
         return {"error": "Processing failed", "details": str(e)}, 500
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
-    data = request.json
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "ok"}), 200
+    data = request.json or {}
     username = data.get("username")
     password = data.get("password")
     
@@ -347,8 +356,11 @@ def threat_analysis(threat_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/upload_logs', methods=['POST'])
+@app.route('/upload_logs', methods=['POST', 'OPTIONS'])
 def upload_logs():
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "ok"}), 200
+
     # Handle both JSON and Raw Text
     if request.is_json:
         data = request.json
