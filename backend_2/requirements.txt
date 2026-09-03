@@ -1,0 +1,10 @@
+Flask
+flask-cors
+Werkzeug
+pandas
+numpy
+scikit-learn
+imbalanced-learn
+joblib
+gunicorn
+requests
