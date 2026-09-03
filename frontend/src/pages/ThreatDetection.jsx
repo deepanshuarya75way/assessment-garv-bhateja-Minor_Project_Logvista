@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldAlert, ServerCrash, Key, Database, Bug, FolderLock, Users, ArrowUpRight, Activity } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './ThreatDetection.css';
 
 const DEFAULT_THREAT_CONFIG = [
@@ -17,7 +18,7 @@ const ThreatDetection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/analysis/summary')
+    fetch(`${API_BASE_URL}/analysis/summary`)
       .then(res => res.json())
       .then(data => {
         const events = data.events || [];

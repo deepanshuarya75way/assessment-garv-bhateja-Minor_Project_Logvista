@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, ShieldAlert, Monitor, Terminal, FileCode, CheckCircle, Activity, Info } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './TimelineReconstruction.css';
 
 const ICON_MAP = {
@@ -16,7 +17,7 @@ const TimelineReconstruction = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/analysis/summary')
+    fetch(`${API_BASE_URL}/analysis/summary`)
       .then(res => res.json())
       .then(data => {
         const timeline = data.timeline || {};

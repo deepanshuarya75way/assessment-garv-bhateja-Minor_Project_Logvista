@@ -6,3 +6,7 @@ build/
 *.log
 .DS_Store
 *.pkl
+__pycache__/
+*.pyc
+.venv/
+venv/

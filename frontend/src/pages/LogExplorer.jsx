@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Download, ChevronDown, ChevronRight, AlertCircle } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './LogExplorer.css';
 
 const MOCK_LOGS = [
@@ -16,7 +17,7 @@ const LogExplorer = () => {
   const [logs, setLogs] = useState(MOCK_LOGS);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/logs')
+    fetch(`${API_BASE_URL}/logs`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

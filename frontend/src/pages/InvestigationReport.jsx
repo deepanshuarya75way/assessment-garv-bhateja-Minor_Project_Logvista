@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, Printer, Shield, FileText, Activity, AlertCircle } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './InvestigationReport.css';
 
 const InvestigationReport = () => {
@@ -7,7 +8,7 @@ const InvestigationReport = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/analysis/summary')
+    fetch(`${API_BASE_URL}/analysis/summary`)
       .then(res => res.json())
       .then(result => {
         setData(result);

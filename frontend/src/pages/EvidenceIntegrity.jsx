@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Fingerprint, CheckCircle, XCircle, Search, Activity } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './EvidenceIntegrity.css';
 
 const EvidenceIntegrity = () => {
@@ -7,7 +8,7 @@ const EvidenceIntegrity = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/analysis/integrity')
+    fetch(`${API_BASE_URL}/analysis/integrity`)
       .then(res => res.json())
       .then(data => {
         setLogs(data);

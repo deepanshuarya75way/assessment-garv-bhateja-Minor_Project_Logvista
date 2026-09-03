@@ -14,10 +14,13 @@ from utils.correlator import correlate_events, extract_ip, extract_timestamp, ex
 from utils.timeline import generate_timeline
 
 app = Flask(__name__)
-# Allow CORS for frontend alignment
-CORS(app)
+# Enable CORS for all routes and origins (essential for Decoupled Vercel + Render setup)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-DB_FILE = "logvista.db"
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "logvista.db")
 
 def get_db_connection():
     conn = sqlite3.connect(DB_FILE)
@@ -468,9 +471,21 @@ def upload():
     result, status = process_logs(file)
     return jsonify(result), status
 
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({
+        "service": "LogVista AI Forensics Backend API",
+        "status": "online",
+        "health": "/health",
+        "version": "1.0.0",
+        "endpoints": ["/stats", "/logs", "/analysis/summary", "/upload_logs", "/login"]
+    }), 200
+
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "ok", "message": "Log Investigation Framework Backend Running"}), 200
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=port, debug=debug)

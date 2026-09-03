@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UploadCloud, FileJson, CheckCircle, AlertTriangle } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './UploadLogs.css';
 
 const UploadLogs = () => {
@@ -74,7 +75,7 @@ const UploadLogs = () => {
 
         setMessage('Uploading to secure database...');
         
-        const response = await fetch('http://127.0.0.1:5000/upload_logs', {
+        const response = await fetch(`${API_BASE_URL}/upload_logs`, {
           method: 'POST',
           headers: { 
             'Content-Type': isJson ? 'application/json' : 'text/plain' 

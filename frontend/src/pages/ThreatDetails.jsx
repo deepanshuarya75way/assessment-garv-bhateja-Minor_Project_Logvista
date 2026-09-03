@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Brain, Shield, Crosshair, AlertTriangle, Activity } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 import './ThreatDetails.css';
 
 const ThreatDetails = () => {
@@ -10,7 +11,7 @@ const ThreatDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5000/analysis/threat/${id}`)
+    fetch(`${API_BASE_URL}/analysis/threat/${id}`)
       .then(res => res.json())
       .then(result => {
         setData(result);
