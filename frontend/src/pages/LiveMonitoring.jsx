@@ -77,49 +77,153 @@ function LiveMonitoring(){
       );
     }
   };
-
-  useEffect(() => {
-    const eventSource = new EventSource(`${API_URL}/live/events`);
-    console.log("Opening SSE Connection...");
-    console.log("EventSource created: ",eventSource);
+  useEffect(()=> {
+    console.log("sse effect start");
+    const eventSource= new EventSource("http://localhost:5000/live/events");
+    const handleSSE = (event) => {
+      console.log("SSE Event recieved:",event)
+      console.log("SSE Event recieved:",event.type)
+      console.log("SSE Event recieved:",event.data)
+      if (!event.data){
+        console.log("ignoring sse event without data");
+        return;
+      }
+      try {
+        const data = JSON.parse(Event.data);
+        if (data.type === "connected") {
+          console.log("SSE Connected");
+          return;
+        }
+        if (data.type === "logs"){
+          setLogs((previousLogs) => [
+            data, ...previousLogs
+          ]);
+        }
+        if (data.type ==="threat"){
+          setLatestThreat(data);
+          setLogs((previousLogs)=> [
+            data,
+            ...previousLogs
+          ]);
+        }
+      } catch (error) {
+        console.error("SSE parse error:",error);
+      }
+    };
+    eventSource.onmessage=handleSSE;
+    eventSource.addEventListener("Log",handleSSE);
+    eventSource.addEventListener("threat",handleSSE);
     eventSource.onopen = () => {
-      console.log("SSE Connection Opened");
+      console.log("SSE connection opened");
     };
-    eventSource.onmessage = (event) => {
-      console.log("SSE event recieved:",event.data);
-    //   const data = JSON.parse(event.data);
-    //   setLogs(previousLogs => [
-    //     data,
-    //     ...previousLogs
-    //   ]);
-    
-    // if (
-    //   data.severity === "Critical" || data.severity === "High"){
-    //     setLatestThreat(data);
-    //   }
-    };
-    // eventSource.onmessage = (event) => {
-    //   try {
-    //     const data = JSON.parse(event.data);
-    //     setLogs(previousLogs => [data,...previousLogs]);
-    //     if (
-    //     data.severity === "Critical" || data.severity === "High"
-    //   ) {
-    //     setLatestThreat(data);
-    //   }} catch (error) {
-    //     console.error(
-    //       "Failed to parse live event.",error
-    //     );
-    //   }
-    // };
-    eventSource.onerror = () => {
-      console.log("SSE ERROR", error);
+    eventSource.onerror = (error) => {
+      console.error("sse error: ",error)
     };
     return () => {
-      console.log("Closing SSE");
-      // eventSource.close();
+      console.log("SSE connection closed");
+    
+      
+      eventSource.removeEventListener("log",handleSSE);
+      eventSource.removeEventListener("threat",handleSSE);
+      eventSource.close();
     };
-  },[]);
+  },[])
+  // useEffect(() => {
+  //   console.log("sse effect staart")
+  //   const eventSource = new EventSource("http://localhost:5000/live/events");
+  //   eventSource.onopen = () => {
+  //     console.log("sse open");
+  //   };
+  //   eventSource.onmessage = (event) => {
+  //     alert ("sse recieved");
+  //     console.log("sse:",event.data);
+  //     const data = JSON.parse(event.data);
+  //     setLogs(prev=> [data, ...prev]);
+  //   }
+  //   // eventSource.onmessage= (event) => {
+  //   //   console.log("frontend see: ",event.data)
+  //   //   console.log("raw sse message")
+  //   //   console.log(event);
+  //   //   console.log("data:",event.data)
+  //   //   setLogs((prev)=>{
+  //   //     console.log("updating logs,previous:",prev);
+  //   //     return [
+  //   //       {
+  //   //         type: "log",
+  //   //         message:event.data,
+  //   //       },
+  //   //       ...prev,
+  //   //     ];
+  //   //   });
+  //   // };
+  //   eventSource.onerror = (error) => {
+  //     console.error("sse error",error);
+  //   };
+  //   return () => {
+  //     console.log("sse cleanup");
+  //     eventSource.close()
+  //   };
+  // },[]
+  // )
+
+  // useEffect(() => {
+  //   const eventSource = new EventSource(`${API_URL}/live/events`);
+  //   console.log("Opening SSE Connection...");
+  //   console.log("EventSource created: ",eventSource);
+  //   eventSource.onopen = () => {
+  //     console.log("SSE Connection Opened");
+  //   };
+  //   eventSource.onmessage = (event) => {
+  //     console.log("SSE event recieved:",event.data);
+  //     try {
+  //       const data=JSON.parse(event.data);
+  //       console.log("Parsed sse data:",data);
+  //       if (data.type ==="connected") {
+  //         console.log("sse connected");
+  //         return;
+  //       }
+  //       if (data.type === "log") {
+  //         setLogs(previousLogs => [data, ...previousLogs]);
+  //       }
+  //       if (data.type ==="threat"){
+  //         setLatestThreat(data);
+  //       }
+  //     } catch (error) {
+  //       console.error("SSE JSON ERROR:",error);
+  //     }
+  //   //   const data = JSON.parse(event.data);
+  //   //   setLogs(previousLogs => [
+  //   //     data,
+  //   //     ...previousLogs
+  //   //   ]);
+    
+  //   // if (
+  //   //   data.severity === "Critical" || data.severity === "High"){
+  //   //     setLatestThreat(data);
+  //   //   }
+  //   };
+  //   // eventSource.onmessage = (event) => {
+  //   //   try {
+  //   //     const data = JSON.parse(event.data);
+  //   //     setLogs(previousLogs => [data,...previousLogs]);
+  //   //     if (
+  //   //     data.severity === "Critical" || data.severity === "High"
+  //   //   ) {
+  //   //     setLatestThreat(data);
+  //   //   }} catch (error) {
+  //   //     console.error(
+  //   //       "Failed to parse live event.",error
+  //   //     );
+  //   //   }
+  //   // };
+  //   eventSource.onerror = () => {
+  //     console.log("SSE ERROR", error);
+  //   };
+  //   return () => {
+  //     console.log("Closing SSE");
+  //     // eventSource.close();
+  //   };
+  // },[]);
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -152,9 +256,8 @@ function LiveMonitoring(){
             <div className="space-y-3">
               {logs.map((log, index) => (
                 <div key={index} className="border rounded-lg p-4">
+                  {log.messaage}
                   <p className="font-medium">{log.message}</p>
-                  <p className="text-sm text-gray-500">IP : {log.ip || "unknown"}</p>
-                  <p className="text-sm">Severity: {log.severity || "Info"}</p>
                 </div>
               ))}
             </div>
