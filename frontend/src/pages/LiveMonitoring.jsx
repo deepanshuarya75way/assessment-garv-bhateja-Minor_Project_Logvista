@@ -128,6 +128,53 @@ function LiveMonitoring(){
       eventSource.close();
     };
   },[])
+  useEffect(()=> {
+    console.log("sse effect start");
+    const eventSource= new EventSource("http://localhost:5000/live/events");
+    eventSource.onopen = () => {
+      console.log("SSE connection opened");
+    };
+    eventSource.onmessage= (event) => {
+      console.log("sse msg recieved:",event.data);
+      if (!event.data) {
+        console.log("empty sse msg ");
+        return;
+      }
+      try {
+        const data = JSON.parse(Event.data);
+        console.log("sse parsed data:",data)
+        if (data.type === "connected") {
+          console.log("SSE Connected");
+          return;
+        }
+        setLogs((previousLogs)=> [
+          data,
+          ...previousLogs
+        ]);
+        // if (data.type === "logs"){
+        //   setLogs((previousLogs) => [
+        //     data, ...previousLogs
+        //   ]);
+        // }
+        if (data.type ==="threat"){
+          setLatestThreat(data);
+          // setLogs((previousLogs)=> [
+          //   data,
+          //   ...previousLogs
+          // ]);
+        }
+      } catch (error) {
+        console.error("SSE parse error:",error);
+      }
+    };
+    eventSource.onerror = (error) => {
+      console.error("sse error: ",error)
+    };
+    return () => {
+      console.log("sse cleanup");
+      eventSource.close();
+    };
+  },[])
   // useEffect(() => {
   //   console.log("sse effect staart")
   //   const eventSource = new EventSource("http://localhost:5000/live/events");
