@@ -1,4 +1,5 @@
 import sqlite3
+import time
 import pandas as pd
 import json
 import traceback
@@ -18,7 +19,7 @@ import json
 import threading
 from utils.live_monitor import LiveLogMonitor
 from utils.log_processor import process_single_log
-from utils.event_stream import publish
+from utils.event_stream import generate_events,publish
 
 app = Flask(__name__)
 # Enable CORS for all routes and origins
@@ -39,11 +40,12 @@ DB_FILE = os.path.join(BASE_DIR, "logvista.db")
 live_monitor=None
 live_thread=None
 
-def handle_live_log(raw_log):
-    event=process_single_log(raw_log)
-    if event is None:
-        return
-    publish(event)
+def handle_live_log(line):
+        print("Live Log recieved: ",line)
+        publish({
+            "type":"log",
+            "message":line
+        })
 
 def get_db_connection():
     conn = sqlite3.connect(DB_FILE)
@@ -569,11 +571,14 @@ def root():
     }), 200
 
 @app.route('/live/start',methods=['POST'])
-def start_live():
+def start_live_monitoring():
     global live_monitor
     global live_thread
+    
     data=request.json or {}
     file_path = data.get("file_path")
+    print("start route called")
+    print("filepath:",file_path)
     if not file_path:
         return jsonify({
             "error":"file_path is required"
@@ -582,13 +587,13 @@ def start_live():
         return jsonify({
             "status":"already_running"
         })
-    live_monitor= LiveLogMonitor(file_path)
+    live_monitor= LiveLogMonitor(file_path,handle_live_log)
     live_thread=threading.Thread(
         target=live_monitor.start,
-        args=(handle_live_log,),
         daemon=True
     )
     live_thread.start()
+    publish({"message":"Live monitoring started", "severity": "Info"})
     return jsonify({
         "status":"started"
     })
@@ -603,20 +608,45 @@ def stop_live():
     })
 
 @app.route('/live/events')
-def live_events():
-    subscriber = subscribe()
-    def generate():
-        try:
-            while True:
-                event=subscriber.get()
-                yield f"data:{json.dumps(event)}\n\n"
-        finally:
-            unsubscribe(subscriber)
+# def live_events():
+#     subscriber = subscribe()
+#     def generate():
+#         try:
+#             while True:
+#                 event=subscriber.get()
+#                 yield f"data:{json.dumps(event)}\n\n"
+#         finally:
+#             unsubscribe(subscriber)
         
+#     return Response(
+#         generate(),
+#         mimetype='text/event-stream'
+#     )
+def live_events():
+    client_queue = subscribe()
+    def stream():
+        try:
+            yield 'data: {"type":"connected"}\n\n'
+            yield from generate_events(client_queue)
+        finally:
+                unsubscribe(client_queue)
     return Response(
-        generate(),
-        mimetype='text/event-stream'
+        stream(),
+        mimetype="text/event-stream",
+        headers={
+            "Cache-control": "no-cahe",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering":"no",
+        },
     )
+
+# @app.route("/live/test", methods=["POST"])
+# def live_test():
+#     publish({
+#         "type":"log",
+#         "message":"Test event from LogVista"
+#     })
+#     return jsonify({"status": "published"})
 
 @app.route('/live/status',methods=['GET'])
 def live_status():
@@ -631,7 +661,16 @@ def live_status():
 def health():
     return jsonify({"status": "ok", "message": "Log Investigation Framework Backend Running"}), 200
 
+print(app.url_map)
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     app.run(host='0.0.0.0', port=port, debug=debug)
+
+
+# print(app.url_map)
+# if __name__ == "__main__":
+#     port = int(os.environ.get('PORT', 5000))
+#     debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+#     app.run(host='0.0.0.0', port=port, debug=debug)

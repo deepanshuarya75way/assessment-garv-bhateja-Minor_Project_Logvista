@@ -1,19 +1,29 @@
 import time
 
 class LiveLogMonitor:
-  def __init__(self, file_path):
+  def __init__(self, file_path,callback):
     self.file_path = file_path
+    self.callback=callback
     self.running = False
-  def start(self,callback):
+  def start(self):
     self.running = True
-    with open(self.file_path,"r",encoding="utf-8") as file:
-      file.seek(0, 2)
-      while self.running:
-        line= file.readline()
+    print("LIVE MONITOR STARTED")
+    print("WATCHING:",self.file_path)
+    try:
+      with open(self.file_path,"r",encoding="utf-8",errors="ignore") as file:
+        file.seek(0, 2)
+        while self.running:
+          line= file.readline()
 
-        if line:
-          callback(line.strip())
-        else:
-          time.sleep(0.5)
+          if line:
+            line=line.strip()
+            if line:
+              print("New line:",line)
+              self.callback(line)
+          else:
+            time.sleep(0.3)
+    except Exception as e:
+      print("Live MONITOR ERROR:",e)
+      
   def stop(self):
     self.running = False

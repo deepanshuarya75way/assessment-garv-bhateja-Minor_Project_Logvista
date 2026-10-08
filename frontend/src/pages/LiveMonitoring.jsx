@@ -6,29 +6,59 @@ function LiveMonitoring(){
   const [logs,setLogs] = useState([]);
   const[latestThreat, setLatestThreat] = useState(null)
 
-  const startMonitoring =async () => {
-    try {
+  // const startMonitoring =async () => {
+  //   try {
+  //     const response = await fetch(
+  //       "http://localhost:5000/live/start",
+  //       {
+  //         method:"POST",
+  //         headers: {
+  //           "Content-Type": "application/json"
+  //         },
+  //         body: JSON.stringify({
+  //           file_path: "server.log"
+  //         })
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     if (!response.ok) {
+  //       throw new error(
+  //         data.error || "Failed to start monitoring"
+  //       );
+  //     }
+  //     setRunning(true)}
+  //   catch (error) {
+  //     console.error(error);
+  //     alert(error.message);
+  //   }
+  // };
+  const startMonitoring = async () => {
+    console.log("Start button clicked");
+    try{
       const response = await fetch(
-        `${API_URL}/live/start`,
+        "http://localhost:5000/live/start",
         {
-          method:"POST",
+          method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "content-Type": "application/json"
           },
-          body: JSON.stringify({
-            file_path: "server.log"
+          body:JSON.stringify({
+            file_path: "/home/coder/workspace/assessment-garv-bhateja-Minor_Project_Logvista/server.log"
           })
         }
       );
+      console.log("Response status:",response.status);
       const data = await response.json();
-      if (response.ok) {
-        setRunning(true);
-      } else {
-        console.error(data);
+      console.log("Response data:", data)
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Failed to start monitoring"
+        );
       }
-    }
-    catch (error) {
-      console.error("Failed to start monitoring",);
+      setRunning(true);
+    } catch (error) {
+      console.error("Start Error: ",error);
+      alert(error.messaage);
     }
   };
 
@@ -50,20 +80,44 @@ function LiveMonitoring(){
 
   useEffect(() => {
     const eventSource = new EventSource(`${API_URL}/live/events`);
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setLogs(previousLogs => [data,...previousLogs]);
-      if (
-        data.severity === "Critical" || data.severity === "High"
-      ) {
-        setLatestThreat(data);
-      }
+    console.log("Opening SSE Connection...");
+    console.log("EventSource created: ",eventSource);
+    eventSource.onopen = () => {
+      console.log("SSE Connection Opened");
     };
+    eventSource.onmessage = (event) => {
+      console.log("SSE event recieved:",event.data);
+    //   const data = JSON.parse(event.data);
+    //   setLogs(previousLogs => [
+    //     data,
+    //     ...previousLogs
+    //   ]);
+    
+    // if (
+    //   data.severity === "Critical" || data.severity === "High"){
+    //     setLatestThreat(data);
+    //   }
+    };
+    // eventSource.onmessage = (event) => {
+    //   try {
+    //     const data = JSON.parse(event.data);
+    //     setLogs(previousLogs => [data,...previousLogs]);
+    //     if (
+    //     data.severity === "Critical" || data.severity === "High"
+    //   ) {
+    //     setLatestThreat(data);
+    //   }} catch (error) {
+    //     console.error(
+    //       "Failed to parse live event.",error
+    //     );
+    //   }
+    // };
     eventSource.onerror = () => {
-      console.log("SSE Connection error");
+      console.log("SSE ERROR", error);
     };
     return () => {
-      eventSource.close();
+      console.log("Closing SSE");
+      // eventSource.close();
     };
   },[]);
   return (
@@ -89,6 +143,24 @@ function LiveMonitoring(){
         <span className="ml-2 font-semibold">
           {running ? "Monitoring" : "Stopped"}
         </span>
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Live Logs
+          </h2>
+          {logs.length===0 ? (<p className="text-gray-500">No logs recieved yet.</p>)
+          : (
+            <div className="space-y-3">
+              {logs.map((log, index) => (
+                <div key={index} className="border rounded-lg p-4">
+                  <p className="font-medium">{log.message}</p>
+                  <p className="text-sm text-gray-500">IP : {log.ip || "unknown"}</p>
+                  <p className="text-sm">Severity: {log.severity || "Info"}</p>
+                </div>
+              ))}
+            </div>
+          )
+        }
+        </div>
       </div>
     </div>
   )

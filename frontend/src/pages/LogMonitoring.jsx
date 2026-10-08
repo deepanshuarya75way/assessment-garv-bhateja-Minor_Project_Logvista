@@ -9,6 +9,7 @@ const LiveMonitoring = () => {
     const source = new EventSource(
       `${API_BASE_URL}/live/events`
     );
+    
     source.onmessage = (event) => {
       const data = JSON.parse(event_data);
       setLogs(previous => [data,...previous]);
