@@ -8,6 +8,7 @@ const Sidebar = () => {
     { path: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/logs', name: 'Log Explorer', icon: <Search size={20} /> },
     { path: '/upload', name: 'Upload Logs', icon: <Search size={20} /> },
+    { path: '/live', name: 'Live Monitoring', icon: <Search size={20} /> },
     { path: '/threats', name: 'Threat Detection', icon: <AlertTriangle size={20} /> },
     { path: '/timeline', name: 'Timeline Reconstruct', icon: <Clock size={20} /> },
     { path: '/report', name: 'Investigations', icon: <FileText size={20} /> },

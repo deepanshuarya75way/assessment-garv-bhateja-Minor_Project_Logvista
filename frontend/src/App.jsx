@@ -13,7 +13,7 @@ import EvidenceIntegrity from './pages/EvidenceIntegrity';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import UploadLogs from './pages/UploadLogs';
-
+import LiveMonitoring from './pages/LiveMonitoring'
 import './App.css';
 
 // Simple protected route checker
@@ -36,6 +36,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="logs" element={<LogExplorer />} />
           <Route path="upload" element={<UploadLogs />} />
+          <Route path="live" element={<LiveMonitoring />} />
           <Route path="threats" element={<ThreatDetection />} />
           <Route path="threats/:id" element={<ThreatDetails />} />
           <Route path="timeline" element={<TimelineReconstruction />} />

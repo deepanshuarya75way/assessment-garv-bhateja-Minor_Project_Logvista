@@ -12,6 +12,13 @@ from utils.detector import detect_log_type, segregate_logs
 from utils.model_handler import evaluate_log
 from utils.correlator import correlate_events, extract_ip, extract_timestamp, extract_user
 from utils.timeline import generate_timeline
+from flask import Response
+from utils.event_stream import subscribe,unsubscribe
+import json
+import threading
+from utils.live_monitor import LiveLogMonitor
+from utils.log_processor import process_single_log
+from utils.event_stream import publish
 
 app = Flask(__name__)
 # Enable CORS for all routes and origins
@@ -28,6 +35,15 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_FILE = os.path.join(BASE_DIR, "logvista.db")
+
+live_monitor=None
+live_thread=None
+
+def handle_live_log(raw_log):
+    event=process_single_log(raw_log)
+    if event is None:
+        return
+    publish(event)
 
 def get_db_connection():
     conn = sqlite3.connect(DB_FILE)
@@ -156,6 +172,65 @@ def process_logs(raw_data):
         print("!!! ERROR DURING LOG PROCESSING !!!")
         traceback.print_exc()
         return {"error": "Processing failed", "details": str(e)}, 500
+
+def calculate_severity(events):
+    threat_count=len(events)
+    if threat_count >=3:
+        return "Critical"
+    if threat_count ==2:
+        return "High"
+    if threat_count ==1:
+        return "Medium"
+    return "Info"
+
+def store_live_event(event):
+    conn=get_db_connection()
+    raw_value=json.dumps(event)
+    prediction=str(event.get("Prediction","Normal"))
+    if "Attack" in prediction or "Malicious" in prediction:
+        severity="Critical"
+    elif "Suspecious" in prediction:
+        severity="High"
+    else:
+        severity="Info"
+    
+    ip=event.get("ip")
+    user=event.get("user")
+    source = (
+        user
+        if user and user !="N/A"
+        else ip
+        if ip
+        else "System"
+    )
+
+    log_hash=hashlib.sha256(raw_value.encode()).hexdigest()
+    conn.execute(
+        """
+        INSERT INTO logs(timestamp,source,event,severity,status,raw,hash)
+        VALUES (?,?,?,?,?,?,?)
+        """,
+        (
+            event.get("timestamp"),
+            source,
+            event.get("type"),
+            severity,
+            "Open",
+            raw_value,
+            log_hash
+        )
+    )
+    conn.commit()
+    conn.close()
+    return severity
+
+def handle_live_log(raw_log):
+    event = process_single_log(raw_log)
+    if event is None:
+        return
+    severity = store_live_event(event)
+    event["severity"]=severity
+    publish(event)
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
@@ -492,6 +567,65 @@ def root():
         "version": "1.0.0",
         "endpoints": ["/stats", "/logs", "/analysis/summary", "/upload_logs", "/login"]
     }), 200
+
+@app.route('/live/start',methods=['POST'])
+def start_live():
+    global live_monitor
+    global live_thread
+    data=request.json or {}
+    file_path = data.get("file_path")
+    if not file_path:
+        return jsonify({
+            "error":"file_path is required"
+        }), 400
+    if live_monitor and live_monitor.running:
+        return jsonify({
+            "status":"already_running"
+        })
+    live_monitor= LiveLogMonitor(file_path)
+    live_thread=threading.Thread(
+        target=live_monitor.start,
+        args=(handle_live_log,),
+        daemon=True
+    )
+    live_thread.start()
+    return jsonify({
+        "status":"started"
+    })
+
+@app.route('/live/stop',methods=['POST'])
+def stop_live():
+    global live_monitor
+    if live_monitor:
+        live_monitor.stop()
+    return jsonify({
+        "status": "stopped"
+    })
+
+@app.route('/live/events')
+def live_events():
+    subscriber = subscribe()
+    def generate():
+        try:
+            while True:
+                event=subscriber.get()
+                yield f"data:{json.dumps(event)}\n\n"
+        finally:
+            unsubscribe(subscriber)
+        
+    return Response(
+        generate(),
+        mimetype='text/event-stream'
+    )
+
+@app.route('/live/status',methods=['GET'])
+def live_status():
+    running=(
+        live_monitor is not None and live_monitor.running
+    )
+    return jsonify({
+        "running": running
+    })
 
 @app.route('/health', methods=['GET'])
 def health():
